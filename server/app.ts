@@ -8,9 +8,18 @@ import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 // add mongoose
 import mongoose = require('mongoose');
+
+//User
+import userModel = require('./models/user');
+
+import User=userModel.User;
+
 import session = require('express-session');
 // flash messages
 import flash = require('connect-flash');
+import passport= require('passport');
+import passportLocal=require('passport-local');
+import LocalStrategy=passportLocal.Strategy;
 
 // import objects namespace
 import * as objects from './objects/customerror';
@@ -41,10 +50,18 @@ app.use(session({
     resave: true
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Initialize Flash Messages
 app.use(flash());
 
 app.use(express.static(path.join(__dirname, '../public')));
+
+//passport config
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser);
+passport.deserializeUser(User.deserializeUser());
 
 // Route Definitions
 app.use('/', routes);

@@ -1,5 +1,6 @@
 "use strict";
 var mongoose = require('mongoose');
+var passportLocalMongoose = require('passport-local-mongoose');
 // DEFINE THE OBJECT SCHEMA
 var userSchema = new mongoose.Schema({
     username: {
@@ -35,6 +36,8 @@ var userSchema = new mongoose.Schema({
         default: Date.now
     }
 }, { collection: 'userInfo' });
+var options = ({ missingPasswordError: "Wrong password" });
+userSchema.plugin(passportLocalMongoose, options);
 // MAKE THIS PUBLIC SO THE CONTROLLER CAN SEE IT
 exports.User = mongoose.model('User', userSchema);
 
